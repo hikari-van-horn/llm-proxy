@@ -1,4 +1,4 @@
-listen = "127.0.0.1:8964"
+listen = "127.0.0.1:9876"
 
 [providers.deepseek]
 api_key = "sk-xxx"
