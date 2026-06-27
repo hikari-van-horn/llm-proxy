@@ -6,7 +6,7 @@
 
 **Architecture:** 5 source files with clear boundaries — types, config loading, proxy forwarding, HTTP server, and entry point. Config selects one provider via `LLM_PROXY_PROVIDER` env var; the provider declares supported API formats as full endpoint URLs. HTTP server detects format from request path, matches against provider endpoints, replaces model name in request body, and pipes the response through unchanged (SSE-compatible).
 
-**Tech Stack:** TypeScript, tsx, pnpm, native `http`/`https`, `@iarna/toml`
+**Tech Stack:** TypeScript, tsx, pnpm, native `http`/`https`, `smol-toml`
 
 ---
 
@@ -54,7 +54,7 @@
   },
   "homepage": "https://github.com/hikari-van-horn/llm-proxy#readme",
   "dependencies": {
-    "@iarna/toml": "^2.2.5"
+    "smol-toml": "^1.7.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -94,13 +94,13 @@
 pnpm install
 ```
 
-Expected: installs `@iarna/toml`, `tsx`, `typescript`, `@types/node`
+Expected: installs `smol-toml`, `tsx`, `typescript`, `@types/node`
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml tsconfig.json
-git commit -m "chore: set up TypeScript project with tsx, pnpm, and @iarna/toml"
+git commit -m "chore: set up TypeScript project with tsx, pnpm, and smol-toml"
 ```
 
 ---
@@ -155,7 +155,7 @@ git commit -m "feat: add shared type definitions"
 ```typescript
 import * as fs from 'fs';
 import * as path from 'path';
-import * as toml from '@iarna/toml';
+import { parse } from 'smol-toml';
 import { AppConfig, ProviderConfig } from './types';
 
 export function loadConfig(configPath?: string): AppConfig {
@@ -168,7 +168,7 @@ export function loadConfig(configPath?: string): AppConfig {
 
   let raw: any;
   try {
-    raw = toml.parse(fs.readFileSync(filePath, 'utf-8'));
+    raw = parse(fs.readFileSync(filePath, 'utf-8'));
   } catch (e: any) {
     console.error(`Failed to parse config.toml: ${e.message}`);
     process.exit(1);
